@@ -17,7 +17,7 @@ import State from "./state";
 // The following character codes are forbidden from being
 // an immediate sibling of NumericLiteralSeparator _
 
-const forbiddenNumericLiteralSeparatorSibling = [
+const forbiddenNumericLiteralSeparatorSiblings = [
   46,  // .
   66,  // B
   69,  // E
@@ -577,8 +577,8 @@ export default class Tokenizer extends LocationParser {
         const prev = this.input.charCodeAt(this.state.pos - 1);
         const next = this.input.charCodeAt(this.state.pos + 1);
         if (code === 95) {
-          if (forbiddenNumericLiteralSeparatorSibling.includes(prev) ||
-              forbiddenNumericLiteralSeparatorSibling.includes(next) ||
+          if (forbiddenNumericLiteralSeparatorSiblings.includes(prev) ||
+              forbiddenNumericLiteralSeparatorSiblings.includes(next) ||
               Number.isNaN(next)) {
             this.raise(this.state.pos, "Invalid NumericLiteralSeparator");
           }
