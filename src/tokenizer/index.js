@@ -577,8 +577,8 @@ export default class Tokenizer extends LocationParser {
         const prev = this.input.charCodeAt(this.state.pos - 1);
         const next = this.input.charCodeAt(this.state.pos + 1);
         if (code === 95) {
-          if (forbiddenNumericLiteralSeparatorSiblings.includes(prev) ||
-              forbiddenNumericLiteralSeparatorSiblings.includes(next) ||
+          if ((forbiddenNumericLiteralSeparatorSiblings.indexOf(prev) > -1) ||
+              (forbiddenNumericLiteralSeparatorSiblings.indexOf(next) > -1) ||
               Number.isNaN(next)) {
             this.raise(this.state.pos, "Invalid NumericLiteralSeparator");
           }
