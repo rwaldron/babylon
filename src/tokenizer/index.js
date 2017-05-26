@@ -13,6 +13,23 @@ import { SourceLocation } from "../util/location";
 import { lineBreak, lineBreakG, isNewLine, nonASCIIwhitespace } from "../util/whitespace";
 import State from "./state";
 
+
+// The following character codes are forbidden from being
+// an immediate sibling of NumericLiteralSeparator _
+
+const forbiddenNumericLiteralSeparatorSibling = [
+  46,  // .
+  66,  // B
+  69,  // E
+  79,  // O
+  88,  // X
+  95,  // _ (multiple separators are not allowed)
+  98,  // b
+  101, // e
+  111, // o
+  120, // x
+];
+
 // Object type used to represent tokens. Note that normally, tokens
 // simply exist as properties on the parser object. This is only
 // used for the onToken callback and the external tokenizer.
@@ -554,7 +571,21 @@ export default class Tokenizer extends LocationParser {
 
     for (let i = 0, e = len == null ? Infinity : len; i < e; ++i) {
       const code = this.input.charCodeAt(this.state.pos);
+      const prev = this.input.charCodeAt(this.state.pos - 1);
+      const next = this.input.charCodeAt(this.state.pos + 1);
+
       let val;
+      if (code === 95) {
+        if (forbiddenNumericLiteralSeparatorSibling.includes(prev) ||
+            forbiddenNumericLiteralSeparatorSibling.includes(next) ||
+            Number.isNaN(next)) {
+          this.raise(this.state.pos, "Invalid NumericLiteralSeparator");
+        }
+
+        // Ignore this _ character
+        ++this.state.pos;
+        continue;
+      }
       if (code >= 97) {
         val = code - 97 + 10; // a
       } else if (code >= 65) {
@@ -608,7 +639,7 @@ export default class Tokenizer extends LocationParser {
 
     if (isIdentifierStart(this.fullCharCodeAtPos())) this.raise(this.state.pos, "Identifier directly after number");
 
-    const str = this.input.slice(start, this.state.pos);
+    const str = this.input.slice(start, this.state.pos).replace(/_/g, "");
     let val;
     if (isFloat) {
       val = parseFloat(str);
