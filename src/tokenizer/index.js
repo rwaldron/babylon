@@ -571,21 +571,24 @@ export default class Tokenizer extends LocationParser {
 
     for (let i = 0, e = len == null ? Infinity : len; i < e; ++i) {
       const code = this.input.charCodeAt(this.state.pos);
-      const prev = this.input.charCodeAt(this.state.pos - 1);
-      const next = this.input.charCodeAt(this.state.pos + 1);
-
       let val;
-      if (code === 95) {
-        if (forbiddenNumericLiteralSeparatorSibling.includes(prev) ||
-            forbiddenNumericLiteralSeparatorSibling.includes(next) ||
-            Number.isNaN(next)) {
-          this.raise(this.state.pos, "Invalid NumericLiteralSeparator");
-        }
 
-        // Ignore this _ character
-        ++this.state.pos;
-        continue;
+      if (this.hasPlugin("numericSeparator")) {
+        const prev = this.input.charCodeAt(this.state.pos - 1);
+        const next = this.input.charCodeAt(this.state.pos + 1);
+        if (code === 95) {
+          if (forbiddenNumericLiteralSeparatorSibling.includes(prev) ||
+              forbiddenNumericLiteralSeparatorSibling.includes(next) ||
+              Number.isNaN(next)) {
+            this.raise(this.state.pos, "Invalid NumericLiteralSeparator");
+          }
+
+          // Ignore this _ character
+          ++this.state.pos;
+          continue;
+        }
       }
+
       if (code >= 97) {
         val = code - 97 + 10; // a
       } else if (code >= 65) {

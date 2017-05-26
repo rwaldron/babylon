@@ -134,6 +134,7 @@ require("babylon").parse("code", {
  - `functionBind`
  - `functionSent`
  - `dynamicImport`
+ - `numericSeparator` ([proposal](https://github.com/samuelgoto/proposal-numeric-separator))
 
 ### FAQ
 
