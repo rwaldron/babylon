@@ -46,26 +46,43 @@ const forbiddenNumericSeparatorSiblings = {
 const allowedNumericSeparatorSiblings = {};
 allowedNumericSeparatorSiblings.bin = [
   // 0 - 1
-  48, 49
+  48,
+  49,
 ];
 allowedNumericSeparatorSiblings.oct = [
   // 0 - 7
   ...allowedNumericSeparatorSiblings.bin,
-  50, 51, 52, 53, 54, 55,
+  50,
+  51,
+  52,
+  53,
+  54,
+  55,
 ];
 allowedNumericSeparatorSiblings.dec = [
   // 0 - 9
   ...allowedNumericSeparatorSiblings.oct,
-  56, 57,
+  56,
+  57,
 ];
 
 allowedNumericSeparatorSiblings.hex = [
   // 0 - 9, A - F, a - f,
   ...allowedNumericSeparatorSiblings.dec,
   // A - F
-  65, 66, 67, 68, 69, 70,
+  65,
+  66,
+  67,
+  68,
+  69,
+  70,
   // a - f
-  97, 98, 99, 100, 101, 102,
+  97,
+  98,
+  99,
+  100,
+  101,
+  102,
 ];
 
 // Object type used to represent tokens. Note that normally, tokens
@@ -746,11 +763,11 @@ export default class Tokenizer extends LocationParser {
     const allowedSiblings =
       radix === 16
         ? allowedNumericSeparatorSiblings.hex
-        : (radix === 10
-            ? allowedNumericSeparatorSiblings.dec
-            : (radix === 8
-                ? allowedNumericSeparatorSiblings.oct
-                : allowedNumericSeparatorSiblings.bin));
+        : radix === 10
+          ? allowedNumericSeparatorSiblings.dec
+          : radix === 8
+            ? allowedNumericSeparatorSiblings.oct
+            : allowedNumericSeparatorSiblings.bin;
 
     let total = 0;
 
